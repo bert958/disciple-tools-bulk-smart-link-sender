@@ -160,7 +160,7 @@ abstract class Disciple_Tools_Magic_Links_Magic_User_Posts_Base extends DT_Magic
         wp_enqueue_script( 'jquery-typeahead', get_template_directory_uri() . $path_js, [ 'jquery' ], filemtime( get_template_directory() . $path_js ) );
         wp_enqueue_style( 'jquery-typeahead-css', get_template_directory_uri() . $path_css, [], filemtime( get_template_directory() . $path_css ) );
 
-        wp_enqueue_style( 'material-font-icons-css', 'https://cdn.jsdelivr.net/npm/@mdi/font@6.6.96/css/materialdesignicons.min.css', [], '6.6.96' );
+        wp_enqueue_style( 'material-font-icons-css', 'https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css', [], '7.4.47' );
 
         Disciple_Tools_Bulk_Magic_Link_Sender_API::enqueue_magic_link_utilities_script();
 
@@ -1041,7 +1041,7 @@ abstract class Disciple_Tools_Magic_Links_Magic_User_Posts_Base extends DT_Magic
         } else {
             $can_update = true;
         }
-        if ( $can_update || isset( $post['assigned_to']['id'] ) && $post['assigned_to']['id'] == get_current_user_id() ) {
+        if ( $can_update || ( isset( $post['assigned_to']['id'] ) && $post['assigned_to']['id'] == get_current_user_id() ) ) {
             $disabled = '';
         }
         $required_tag = ( isset( $fields[$field_key]['required'] ) && $fields[$field_key]['required'] === true ) ? 'required' : '';
@@ -1716,9 +1716,9 @@ abstract class Disciple_Tools_Magic_Links_Magic_User_Posts_Base extends DT_Magic
                 $updates['assigned_to'] = $params['parts']['post_id'];
             }
 
-            $updated_post = DT_Posts::create_post( $params['post_type'], $updates, false, false );
+            $updated_post = DT_Posts::create_post( $params['post_type'], $updates );
         } else {
-            $updated_post = DT_Posts::update_post( $params['post_type'], $params['post_id'], $updates, false, false );
+            $updated_post = DT_Posts::update_post( $params['post_type'], $params['post_id'], $updates );
         }
         if ( empty( $updated_post ) || is_wp_error( $updated_post ) ) {
             if ( is_wp_error( $updated_post ) ) {
@@ -1735,7 +1735,7 @@ abstract class Disciple_Tools_Magic_Links_Magic_User_Posts_Base extends DT_Magic
         if ( !empty( $comments ) ) {
             foreach ( $comments as $comment ) {
                 if ( !empty( $comment ) ) {
-                    $updated_comment = DT_Posts::add_post_comment( $updated_post['post_type'], $updated_post['ID'], $comment, 'comment', [], false );
+                    $updated_comment = DT_Posts::add_post_comment( $updated_post['post_type'], $updated_post['ID'], $comment );
                     if ( empty( $updated_comment ) || is_wp_error( $updated_comment ) ) {
                         return [
                             'id' => $updated_post['ID'],
@@ -1787,7 +1787,7 @@ abstract class Disciple_Tools_Magic_Links_Magic_User_Posts_Base extends DT_Magic
             $field_settings = $post_settings['fields'][$field];
 
             if ( $field_settings['type'] === 'connection' ) {
-                if ( empty( $link_obj ) || isset( $link_obj->type_config->enable_connection_fields ) && $link_obj->type_config->enable_connection_fields ) {
+                if ( empty( $link_obj ) || ( isset( $link_obj->type_config->enable_connection_fields ) && $link_obj->type_config->enable_connection_fields ) ) {
                     $options = DT_Posts::get_viewable_compact( $field_settings['post_type'], $query ?? '' );
                 }
             } else if ( $field_settings['type'] === 'tags' ) {
