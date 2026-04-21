@@ -388,6 +388,7 @@ class Disciple_Tools_Magic_Links_Layout_List_Detail {
                 }
             }
         }
+        do_action( 'disciple_tools_add_custom_detail_layout', $this->post); 
         ?>
         </dt-tile>
         <?php
